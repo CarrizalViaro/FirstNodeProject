@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const session = require("express-session");
 
 const { dbConnection } = require('../database/config');
 
@@ -11,9 +12,8 @@ class Server {
 
         this.paths = {
             auth:       '/api/auth',
-            buscar:     '/api/buscar',
             usuarios:   '/api/usuarios',
-            views:   '/',
+            views:   '/views',
         }
 
 
@@ -41,14 +41,19 @@ class Server {
         this.app.use( express.json() );
 
         // Directorio Público
-        this.app.use( express.static('public') );
+        this.app.use( express.static('./public') );
+
+        this.app.use(session({
+            secret: process.env.SECRETORPRIVATEKEY,
+            saveUninitialized: true,
+            resave: true,
+          }));
 
     }
 
     routes() {
         
         this.app.use( this.paths.auth, require('../routes/auth'));
-        this.app.use( this.paths.buscar, require('../routes/buscar'));
         this.app.use( this.paths.usuarios, require('../routes/usuarios'));
         this.app.use( this.paths.views, require('../routes/views'));
         

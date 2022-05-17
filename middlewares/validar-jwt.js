@@ -1,56 +1,51 @@
-const { response, request } = require('express');
-const jwt = require('jsonwebtoken');
+const { response, request } = require("express");
+const jwt = require("jsonwebtoken");
+const path = require("path");
+const Usuario = require("../models/usuario");
 
-const Usuario = require('../models/usuario');
+const validarJWT = async (req = request, res = response, next) => {
+  const token = req.header("x-token");
 
+  if (!token) {
+    return res.status(401).json({
+      msg: "No hay token en la petición",
+    });
+  }
 
-const validarJWT = async( req = request, res = response, next ) => {
+  try {
+    const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
 
-    const token = req.header('x-token');
+    // leer el usuario que corresponde al uid
+    const usuario = await Usuario.findById(uid);
 
-    if ( !token ) {
-        return res.status(401).json({
-            msg: 'No hay token en la petición'
-        });
+    if (!usuario) {
+      return res.status(401).json({
+        msg: "Token no válido - usuario no existe DB",
+      });
     }
 
-    try {
-        
-        const { uid } = jwt.verify( token, process.env.SECRETORPRIVATEKEY );
+    req.usuario = usuario;
+    next();
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      msg: "Token no válido",
+    });
+  }
+};
 
-        // leer el usuario que corresponde al uid
-        const usuario = await Usuario.findById( uid );
+const validarSession = async (req = request, res = response, next) => {
+  const sessionToken = req.session.token;
 
-        if( !usuario ) {
-            return res.status(401).json({
-                msg: 'Token no válido - usuario no existe DB'
-            })
-        }
+  if (!sessionToken) {
+    let rutaDeArchivo = path.join(__dirname, "../no_session.html");
+    return res.sendFile(rutaDeArchivo);
+  }
 
-        // Verificar si el uid tiene estado true
-        if ( !usuario.estado ) {
-            return res.status(401).json({
-                msg: 'Token no válido - usuario con estado: false'
-            })
-        }
-        
-        
-        req.usuario = usuario;
-        next();
-
-    } catch (error) {
-
-        console.log(error);
-        res.status(401).json({
-            msg: 'Token no válido'
-        })
-    }
-
-}
-
-
-
+  next();
+};
 
 module.exports = {
-    validarJWT
-}
+  validarJWT,
+  validarSession,
+};
