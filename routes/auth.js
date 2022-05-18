@@ -2,10 +2,10 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 
 
-const { validarCampos } = require('../middlewares/validar-campos');
+const { validarCampos, validarSession } = require('../middlewares');
 
 
-const { login } = require('../controllers/auth');
+const { login, logout } = require('../controllers/auth');
 
 
 const router = Router();
@@ -15,6 +15,10 @@ router.post('/login',[
     check('password', 'La contraseña es obligatoria').not().isEmpty(),
     validarCampos
 ],login );
+
+router.get('/logout',[
+    validarSession
+],logout );
 
 
 

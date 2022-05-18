@@ -5,7 +5,7 @@ const {
     validarJWT, validarSession
 } = require('../middlewares');
 
-const { index } = require('../controllers/auth');
+const { index, form } = require('../controllers/auth');
 
 
 const router = Router();
@@ -13,6 +13,9 @@ const router = Router();
 
 router.get('/',[validarSession]
         , index );
+
+router.get('/form',[validarSession]
+        , form );
 
 
 module.exports = router;

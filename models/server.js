@@ -1,73 +1,74 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
 const session = require("express-session");
 
-const { dbConnection } = require('../database/config');
+const { dbConnection } = require("../database/config");
 
 class Server {
+  constructor() {
+    this.app = express();
+    this.port = process.env.PORT;
 
-    constructor() {
-        this.app  = express();
-        this.port = process.env.PORT;
+    this.paths = {
+      auth: "/api/auth",
+      usuarios: "/api/usuarios",
+      views: "/views",
+      notas: "/api/notas",
+    };
 
-        this.paths = {
-            auth:       '/api/auth',
-            usuarios:   '/api/usuarios',
-            views:   '/views',
-        }
+    // Conectar a base de datos
+    this.conectarDB();
 
+    // Middlewares
+    this.middlewares();
 
-        // Conectar a base de datos
-        this.conectarDB();
+    // Rutas de mi aplicación
+    this.routes();
+  }
 
-        // Middlewares
-        this.middlewares();
+  async conectarDB() {
+    await dbConnection();
+  }
 
-        // Rutas de mi aplicación
-        this.routes();
-    }
+  middlewares() {
+    // CORS
+    this.app.use(cors());
 
-    async conectarDB() {
-        await dbConnection();
-    }
+    // Lectura y parseo del body
+    this.app.use(express.json());
 
+    // Directorio Público
+    this.app.use(express.static(path.join(__dirname, 'public')));
 
-    middlewares() {
+    //Directorio de vistas
+    this.app.set("views", "./views");
 
-        // CORS
-        this.app.use( cors() );
+    //Vistas
+    this.app.set("view engine", "pug");
 
-        // Lectura y parseo del body
-        this.app.use( express.json() );
+    //Sesion local
+    this.app.use(
+      session({
+        secret: process.env.SECRETORPRIVATEKEY,
+        saveUninitialized: true,
+        resave: true,
+      })
+    );
+  }
 
-        // Directorio Público
-        this.app.use( express.static('./public') );
+  routes() {
+    this.app.use(this.paths.auth, require("../routes/auth"));
+    this.app.use(this.paths.usuarios, require("../routes/usuarios"));
+    this.app.use(this.paths.views, require("../routes/views"));
+    this.app.use(this.paths.notas, require("../routes/notas"));
+  }
 
-        this.app.use(session({
-            secret: process.env.SECRETORPRIVATEKEY,
-            saveUninitialized: true,
-            resave: true,
-          }));
-
-    }
-
-    routes() {
-        
-        this.app.use( this.paths.auth, require('../routes/auth'));
-        this.app.use( this.paths.usuarios, require('../routes/usuarios'));
-        this.app.use( this.paths.views, require('../routes/views'));
-        
-    }
-
-    listen() {
-        this.app.listen( this.port, () => {
-            console.log('Servidor corriendo en puerto', this.port );
-        });
-    }
-
+  listen() {
+    this.app.listen(this.port, () => {
+      console.log("Servidor corriendo en puerto", this.port);
+    });
+  }
 }
-
-
-
 
 module.exports = Server;

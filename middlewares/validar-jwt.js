@@ -35,11 +35,52 @@ const validarJWT = async (req = request, res = response, next) => {
 };
 
 const validarSession = async (req = request, res = response, next) => {
-  const sessionToken = req.session.token;
+    const token = req.query.token
+  
+    if(!token){
+        return res.render('no_session');
+    }
 
-  if (!sessionToken) {
-    let rutaDeArchivo = path.join(__dirname, "../no_session.html");
-    return res.sendFile(rutaDeArchivo);
+    const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
+
+    // leer el usuario que corresponde al uid
+    const usuario = await Usuario.findById(uid);
+
+    if (!usuario) {
+      return res.status(401).json({
+        msg: "Token no válido - usuario no existe DB",
+      });
+    }
+
+  if (!usuario.remember_token) {
+    return res.render('no_session');
+  }
+
+  req.usuario = usuario;
+
+  next();
+};
+
+const validarSessionPost = async (req = request, res = response, next) => {
+    const token = req.body.token
+  
+    if(!token){
+        return res.render('no_session');
+    }
+    
+    const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
+
+    // leer el usuario que corresponde al uid
+    const usuario = await Usuario.findById(uid);
+
+    if (!usuario) {
+      return res.status(401).json({
+        msg: "Token no válido - usuario no existe DB",
+      });
+    }
+
+  if (!usuario.remember_token) {
+    return res.render('no_session');
   }
 
   next();
@@ -48,4 +89,5 @@ const validarSession = async (req = request, res = response, next) => {
 module.exports = {
   validarJWT,
   validarSession,
+  validarSessionPost
 };

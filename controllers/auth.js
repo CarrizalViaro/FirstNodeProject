@@ -33,7 +33,9 @@ const login = async(req, res = response) => {
         // Generar el JWT
         const token = await generarJWT( usuario.id );
 
-        req.session.token = token;
+        // Guardar en BD
+        usuario.remember_token = token;
+        await usuario.save();
 
         res.json({
             usuario,
@@ -49,12 +51,29 @@ const login = async(req, res = response) => {
 
 }
 
+const logout = async (req = request, res = response, next) => {
+    const uid = req.usuario.uid
+
+    // leer el usuario que corresponde al uid
+    const usuario = await Usuario.findById(uid);
+
+    usuario.remember_token = "";
+    await usuario.save();
+
+    return res.render('no_session');
+};
+
 const index = async(req, res = response) => {
-    let rutaDeArchivo = path.join(__dirname, "../plantilla.html");
-    res.sendFile(rutaDeArchivo);
+    res.render('plantilla')
+}
+
+const form = async(req, res = response) => {
+    res.render('form')
 }
 
 module.exports = {
     login,
-    index
+    logout,
+    index,
+    form
 }
