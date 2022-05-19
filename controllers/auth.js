@@ -35,6 +35,7 @@ const login = async(req, res = response) => {
 
         // Guardar en BD
         usuario.remember_token = token;
+        req.session.remember_token = token;
         await usuario.save();
 
         res.json({
@@ -52,13 +53,8 @@ const login = async(req, res = response) => {
 }
 
 const logout = async (req = request, res = response, next) => {
-    const uid = req.usuario.uid
 
-    // leer el usuario que corresponde al uid
-    const usuario = await Usuario.findById(uid);
-
-    usuario.remember_token = "";
-    await usuario.save();
+    req.session.destroy();
 
     return res.render('no_session');
 };
@@ -67,13 +63,10 @@ const index = async(req, res = response) => {
     res.render('plantilla')
 }
 
-const form = async(req, res = response) => {
-    res.render('form')
-}
+
 
 module.exports = {
     login,
     logout,
-    index,
-    form
+    index
 }

@@ -16,7 +16,7 @@ function iniciarSesion() {
     .then((data) => {
         if($.isEmptyObject(data.error)){
             localStorage.setItem("token",data.token);
-            window.location = "/views/?token="+localStorage.getItem("token")
+            window.location = "/views/"
         }else{
             alert("credenciales incorrectas")
         }

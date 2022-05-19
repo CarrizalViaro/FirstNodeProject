@@ -35,7 +35,7 @@ const validarJWT = async (req = request, res = response, next) => {
 };
 
 const validarSession = async (req = request, res = response, next) => {
-    const token = req.query.token
+    const token = req.session.remember_token
   
     if(!token){
         return res.render('no_session');
@@ -62,7 +62,7 @@ const validarSession = async (req = request, res = response, next) => {
 };
 
 const validarSessionPost = async (req = request, res = response, next) => {
-    const token = req.body.token
+    const token = req.query.remember_token || req.body.remember_token
   
     if(!token){
         return res.render('no_session');
@@ -78,10 +78,6 @@ const validarSessionPost = async (req = request, res = response, next) => {
         msg: "Token no válido - usuario no existe DB",
       });
     }
-
-  if (!usuario.remember_token) {
-    return res.render('no_session');
-  }
 
   next();
 };

@@ -23,6 +23,16 @@ const notasGet = async(req = request, res = response) => {
     });
 }
 
+const notasGetView = async(req = request, res = response) => {
+
+    const [ total, notas ] = await Promise.all([
+        Nota.countDocuments(),
+        Nota.find()
+    ]);
+
+    res.render('form',{notas: notas})
+}
+
 const notasPost = async(req, res = response) => {
     
     const { titulo, descripcion } = req.body;
@@ -39,5 +49,6 @@ const notasPost = async(req, res = response) => {
 
 module.exports = {
     notasGet,
+    notasGetView,
     notasPost
 }

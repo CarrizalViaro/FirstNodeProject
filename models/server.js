@@ -2,8 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const session = require("express-session");
-
+const MongoStore = require('connect-mongo'); 
 const { dbConnection } = require("../database/config");
+let conection;
 
 class Server {
   constructor() {
@@ -39,7 +40,7 @@ class Server {
     this.app.use(express.json());
 
     // Directorio Público
-    this.app.use(express.static(path.join(__dirname, 'public')));
+    this.app.use("/public",express.static(__dirname+"/../public"));
 
     //Directorio de vistas
     this.app.set("views", "./views");
@@ -53,6 +54,7 @@ class Server {
         secret: process.env.SECRETORPRIVATEKEY,
         saveUninitialized: true,
         resave: true,
+        store: MongoStore.create({ mongoUrl: process.env.MONGODB_CNN })
       })
     );
   }

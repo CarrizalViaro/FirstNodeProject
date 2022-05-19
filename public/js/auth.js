@@ -1,9 +1,9 @@
 function irDashboard() {
-  window.location = "/views/?token=" + localStorage.getItem("token");
+  window.location = "/views/";
 }
 
 function irForm() {
-  window.location = "/views/form?token=" + localStorage.getItem("token");
+  window.location = "/views/form";
 }
 
 function guardarNota() {
@@ -27,7 +27,7 @@ function guardarNota() {
       .then((data) => {
         if ($.isEmptyObject(data.error)) {
           alert("Guardado con exito");
-          console.log(data)
+          window.location = "/views/form";
           $('#txtName').val('');
           $('#txtComents').val('');
         } else {
@@ -58,5 +58,5 @@ function validarCampos() {
 function logout() {
   let token = localStorage.getItem("token");
   localStorage.clear();
-  window.location = "/api/auth/logout?token=" + token;
+  window.location = "/api/auth/logout";
 }
