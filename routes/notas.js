@@ -13,7 +13,7 @@ const { notasGet,
 const router = Router();
 
 
-router.get('/',[validarSessionPost], notasGet );
+router.post('/',[validarSessionPost], notasGet );
 
 router.post('/insert',[
     validarSession,
