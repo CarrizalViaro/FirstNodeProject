@@ -26,7 +26,6 @@ function guardarNota() {
       .then((response) => response.json())
       .then((data) => {
         if ($.isEmptyObject(data.error)) {
-          alert("Guardado con exito");
           window.location = "/views/form";
           $('#txtName').val('');
           $('#txtComents').val('');

@@ -1,4 +1,5 @@
 const express = require("express");
+const net = require('net');
 const cors = require("cors");
 const path = require("path");
 const session = require("express-session");
@@ -10,6 +11,7 @@ class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT;
+    this.host = process.env.HOST;
 
     this.paths = {
       auth: "/api/auth",
@@ -67,7 +69,7 @@ class Server {
   }
 
   listen() {
-    this.app.listen(this.port, () => {
+    this.app.listen(this.port, this.host, () => {
       console.log("Servidor corriendo en puerto", this.port);
     });
   }
