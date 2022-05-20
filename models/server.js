@@ -45,7 +45,7 @@ class Server {
     this.app.use("/public",express.static(__dirname+"/../public"));
 
     //Directorio de vistas
-    this.app.set("views", "./views");
+    this.app.set("views", "./../views");
 
     //Vistas
     this.app.set("view engine", "pug");
