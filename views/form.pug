@@ -1,0 +1,45 @@
+extends layout.pug
+
+block content
+    include nav.pug
+    div.d-flex.justify-content-center.p-5
+        div.col-8
+            div.col-12.d-flex.flex-row-reverse
+                button.btn.btn-primary(id="btnAbrirModal" data-toggle="modal" data-target="#exampleModal" onClick="$('#exampleModal').modal('show');") Agregar
+            each nota in notas
+                div.card.col-12.m-3
+                    div.card-body
+                        h5.card-title= nota.titulo
+                        p.card-text=  nota.descripcion
+            div.modal.fade(id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true")
+                div.modal-dialog(role="document")
+                    div.modal-content
+                        div.modal-header
+                            h5.modal-title(id="exampleModalLabel") Agregar una nueva nota
+                        div.modal-body
+                            input.col-12.mb-3.form-control(
+                                id="txtName"
+                                type='text'
+                                name='txtName'
+                                placeholder='Titulo'
+                            )
+                            textarea.col-12.mb-3.form-control(
+                                id="txtComents"
+                                name="txtComents"
+                                placeholder="Descripcion" 
+                                rows="8"
+                            )
+                        div.modal-footer
+                            button.btn.btn-secondary(type="button" data-dismiss="modal" onClick="$('#exampleModal').modal('hide');") Cerrar
+                            button.btn.btn-primary(
+                                id="btnSave"
+                                name='btnSave'
+                                onClick="guardarNota()"
+                            ) Guardar Nota
+            
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js") 
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous")
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous")
+    script 
+        include ../public/js/auth.js
+        

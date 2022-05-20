@@ -22,6 +22,9 @@ const UsuarioSchema = Schema({
     password: {
         type: String,
         required: [true, 'La contraseña es obligatoria'],
+    },
+    remember_token: {
+        type: String
     }
 });
 

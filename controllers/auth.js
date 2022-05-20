@@ -33,7 +33,10 @@ const login = async(req, res = response) => {
         // Generar el JWT
         const token = await generarJWT( usuario.id );
 
-        req.session.token = token;
+        // Guardar en BD
+        usuario.remember_token = token;
+        req.session.remember_token = token;
+        await usuario.save();
 
         res.json({
             usuario,
@@ -49,12 +52,21 @@ const login = async(req, res = response) => {
 
 }
 
+const logout = async (req = request, res = response, next) => {
+
+    req.session.destroy();
+
+    return res.render('no_session');
+};
+
 const index = async(req, res = response) => {
-    let rutaDeArchivo = path.join(__dirname, "../plantilla.html");
-    res.sendFile(rutaDeArchivo);
+    res.render('plantilla')
 }
+
+
 
 module.exports = {
     login,
+    logout,
     index
 }

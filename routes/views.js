@@ -6,6 +6,7 @@ const {
 } = require('../middlewares');
 
 const { index } = require('../controllers/auth');
+const { notasGetView } = require('../controllers/notas');
 
 
 const router = Router();
@@ -13,6 +14,9 @@ const router = Router();
 
 router.get('/',[validarSession]
         , index );
+
+router.get('/form',[validarSession]
+        , notasGetView );
 
 
 module.exports = router;
