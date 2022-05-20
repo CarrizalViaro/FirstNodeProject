@@ -2,7 +2,7 @@ const { response, request } = require('express');
 const bcryptjs = require('bcryptjs');
 
 
-const Nota = require('../models/Nota');
+const Nota = require('../models/nota');
 
 
 
