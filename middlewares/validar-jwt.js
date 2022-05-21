@@ -41,6 +41,11 @@ const validarSession = async (req = request, res = response, next) => {
         return res.render('no_session');
     }
 
+    const { exp } = jwt.decode(token);
+    if (Date.now() >= exp * 1000) {
+        req.session.destroy();
+        return res.render('no_session');
+    }
     const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
 
     // leer el usuario que corresponde al uid

@@ -16,6 +16,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.3",
     "express-validator": "^6.9.2",
+    "firebase-admin": "^10.2.0",
     "google-auth-library": "^6.1.6",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.15",

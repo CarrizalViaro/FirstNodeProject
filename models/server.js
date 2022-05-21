@@ -5,12 +5,6 @@ const path = require("path");
 const session = require("express-session");
 const MongoStore = require('connect-mongo'); 
 const { dbConnection } = require("../database/config");
-const admin = require("firebase-admin");
-const serviceAccount = require("path/to/serviceAccountKey.json");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
 
 class Server {
   constructor() {
