@@ -1,5 +1,3 @@
-const pKey = process.env.FB_PRIVATE_KEY.replace(/\\n/g, '\n');
-
 const fbCredentials = {
   "type": "service_account",
   "project_id": "firstnodeproject-bda72",
