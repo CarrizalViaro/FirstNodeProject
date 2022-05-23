@@ -3,22 +3,14 @@ const bcryptjs = require('bcryptjs');
 
 
 const Usuario = require('../models/usuario');
-
+const UsuariosService = require('../services/usuariosService');
 
 
 const usuariosGet = async(req = request, res = response) => {
 
-    const { limite = 5, desde = 0 } = req.query;
-
-    const [ total, usuarios ] = await Promise.all([
-        Usuario.countDocuments(),
-        Usuario.find()
-            .skip( Number( desde ) )
-            .limit(Number( limite ))
-    ]);
+    const usuarios = await UsuariosService.usuariosAll();
 
     res.json({
-        total,
         usuarios
     });
 }
@@ -26,14 +18,11 @@ const usuariosGet = async(req = request, res = response) => {
 const usuariosPost = async(req, res = response) => {
     
     const { name, lastName, user, correo, password } = req.body;
-    const usuario = new Usuario({ name, lastName, user, correo, password });
-
-    // Encriptar la contraseña
+    const usuarioNew = { name, lastName, user, correo, password };
     const salt = bcryptjs.genSaltSync();
-    usuario.password = bcryptjs.hashSync( password, salt );
+    usuarioNew.password = bcryptjs.hashSync( password, salt );
 
-    // Guardar en BD
-    await usuario.save();
+    const usuario = await UsuariosService.usuariosAdd(usuarioNew);
 
     res.json({
         usuario

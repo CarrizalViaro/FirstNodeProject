@@ -2,6 +2,7 @@ const { response, request } = require("express");
 const jwt = require("jsonwebtoken");
 const path = require("path");
 const Usuario = require("../models/usuario");
+const UsuariosService = require('../services/usuariosService');
 
 const validarJWT = async (req = request, res = response, next) => {
   const token = req.header("x-token");
@@ -13,10 +14,10 @@ const validarJWT = async (req = request, res = response, next) => {
   }
 
   try {
-    const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
+    const { id } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
 
     // leer el usuario que corresponde al uid
-    const usuario = await Usuario.findById(uid);
+    const usuario = await UsuariosService.getUsuario(id);
 
     if (!usuario) {
       return res.status(401).json({
@@ -46,10 +47,10 @@ const validarSession = async (req = request, res = response, next) => {
         req.session.destroy();
         return res.render('no_session');
     }
-    const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
+    const { id } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
 
     // leer el usuario que corresponde al uid
-    const usuario = await Usuario.findById(uid);
+    const usuario = await UsuariosService.getUsuario(id);
 
     if (!usuario) {
       return res.status(401).json({
@@ -57,13 +58,9 @@ const validarSession = async (req = request, res = response, next) => {
       });
     }
 
-  if (!usuario.remember_token) {
-    return res.render('no_session');
-  }
+    req.usuario = usuario;
 
-  req.usuario = usuario;
-
-  next();
+    next();
 };
 
 const validarSessionPost = async (req = request, res = response, next) => {
@@ -73,10 +70,10 @@ const validarSessionPost = async (req = request, res = response, next) => {
         return res.render('no_session');
     }
     
-    const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
+    const { id } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
 
     // leer el usuario que corresponde al uid
-    const usuario = await Usuario.findById(uid);
+    const usuario = await UsuariosService.getUsuario(id);
 
     if (!usuario) {
       return res.status(401).json({

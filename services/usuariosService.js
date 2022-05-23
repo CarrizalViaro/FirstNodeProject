@@ -13,6 +13,25 @@ module.exports = class UsuariosService {
         }
     }
 
+    static async loginUser(usuario) {
+        try {
+            const response = await UsuarioModel.loginUser(usuario);
+            return response;
+        } catch (e) {
+            console.log(e.message);
+        }
+    }
+
+    static async getUsuario(id) {
+        try {
+            const usuario = await UsuarioModel.getUsuarioById(id);
+
+            return usuario;
+        } catch (e) {
+            console.log(e.message);
+        }
+    }
+
     // nueva nota
     static async usuariosAdd(usuario) {
         try {

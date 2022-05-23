@@ -23,7 +23,6 @@ module.exports = class NotasService {
         }
     }
 
-    // borrar nota
     static async notasDelete(id) {
         try {
             const response = await NotasModel.deleteNota(id);
